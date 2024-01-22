@@ -86,6 +86,7 @@ if(BUILD_VGICP_CUDA)
             pcl::pcl_cuda_features
             pcl::pcl_cuda_sample_consensus
             pcl::pcl_cuda_segmentation
+            Eigen3::Eigen
             CUDA::cublas
             CUDA::curand
     )
@@ -100,7 +101,6 @@ if(BUILD_VGICP_CUDA)
 
     target_include_directories(fast_vgicp_cuda PRIVATE
         include
-        thirdparty/Eigen
         thirdparty/nvbio
         ${OpenMP_CXX_FLAGS}
     )
