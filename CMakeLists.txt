@@ -54,7 +54,7 @@ target_include_directories(fast_gicp PUBLIC
 if(BUILD_VGICP_CUDA)
     set(CUDA_NVCC_FLAGS "--expt-relaxed-constexpr")
     add_definitions(-DUSE_VGICP_CUDA)
-    glyd_add_library(fast_vgicp_cuda SHARED
+    glyd_add_cuda_library(fast_vgicp_cuda SHARED
         SOURCES
             src/fast_gicp/cuda/fast_vgicp_cuda.cu
             src/fast_gicp/cuda/brute_force_knn.cu
@@ -81,14 +81,6 @@ if(BUILD_VGICP_CUDA)
             CUDA::cublas
             CUDA::curand
     )
-    set_property(
-        TARGET
-	          fast_vgicp_cuda
-	      PROPERTY
-            CUDA_STANDARD
-            14
-    )
-    set_target_properties(fast_vgicp_cuda PROPERTIES CUDA_ARCHITECTURES "61;72;86")
 
     target_include_directories(fast_vgicp_cuda PRIVATE
         include
