@@ -1,0 +1,102 @@
+load("//bazel/rules/cc:defs.bzl", "cc_library", "cc_binary")
+load("@ark//bazel/rules/cuda:defs.bzl", "cuda_library", "cuda_binary", "cuda_test")
+
+cc_library(
+    name = "fast_gicp",
+    srcs = [
+        "src/fast_gicp/gicp/lsq_registration.cpp",
+        "src/fast_gicp/gicp/fast_vgicp_cuda.cpp",
+        "src/fast_gicp/ndt/ndt_cuda.cpp",
+    ],
+    hdrs = [
+        "include/fast_gicp/ndt/ndt_cuda.hpp",
+        "include/fast_gicp/gicp/fast_vgicp_cuda.hpp",
+        "include/fast_gicp/gicp/lsq_registration.hpp",
+        "include/fast_gicp/gicp/impl/lsq_registration_impl.hpp",
+        "include/fast_gicp/gicp/impl/fast_vgicp_cuda_impl.hpp",
+        "include/fast_gicp/ndt/impl/ndt_cuda_impl.hpp",
+        "include/fast_gicp/so3/so3.hpp",
+        "include/fast_gicp/gicp/fast_gicp.hpp",
+        "include/fast_gicp/gicp/fast_gicp_st.hpp",
+    ],
+    visibility = ["//visibility:public"],
+    includes = ["include"],
+    deps = [
+        ":fast_vgicp_cuda",
+        "@third_party//:pcl__pcl_common",
+        "@third_party//:pcl__pcl_features",
+        "@third_party//:pcl__pcl_filters",
+        "@third_party//:pcl__pcl_io",
+        "@third_party//:pcl__pcl_kdtree",
+        "@third_party//:pcl__pcl_octree",
+        "@third_party//:pcl__pcl_registration",
+        "@third_party//:pcl__pcl_sample_consensus",
+        "@third_party//:pcl__pcl_search",
+    ],
+)
+
+cc_library(
+    name = "settings",
+    hdrs = [
+        "include/fast_gicp/gicp/gicp_settings.hpp",
+        "include/fast_gicp/ndt/ndt_settings.hpp",
+    ],
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+)
+
+cuda_library(
+    name = "fast_vgicp_cuda",
+    local_defines = ["USE_VGICP_CUDA"],
+    srcs = [
+        "src/fast_gicp/cuda/fast_vgicp_cuda.cu",
+        "src/fast_gicp/cuda/brute_force_knn.cu",
+        "src/fast_gicp/cuda/covariance_estimation.cu",
+        "src/fast_gicp/cuda/covariance_estimation_rbf.cu",
+        "src/fast_gicp/cuda/covariance_regularization.cu",
+        "src/fast_gicp/cuda/gaussian_voxelmap.cu",
+        "src/fast_gicp/cuda/find_voxel_correspondences.cu",
+        "src/fast_gicp/cuda/compute_derivatives.cu",
+        "src/fast_gicp/cuda/compute_mahalanobis.cu",
+        "src/fast_gicp/cuda/ndt_cuda.cu",
+        "src/fast_gicp/cuda/ndt_compute_derivatives.cu",
+    ] + glob(["include/fast_gicp/cuda/*.cuh"]),
+    includes = ["include"],
+    deps = [
+        ":settings",
+        "@third_party//:pcl__pcl_common",
+        "@third_party//:pcl__pcl_features",
+        "@third_party//:pcl__pcl_filters",
+        "@third_party//:pcl__pcl_io",
+        "@third_party//:pcl__pcl_kdtree",
+        "@third_party//:pcl__pcl_octree",
+        "@third_party//:pcl__pcl_registration",
+        "@third_party//:pcl__pcl_sample_consensus",
+        "@third_party//:pcl__pcl_search",
+        "@eigen",
+        "@thrust",
+        "@cuda//:cublas",
+        "@cuda//:curand",
+        "@nvbio//:basic",
+    ],
+    copts = ["--disable-warnings"],
+)
+
+cc_binary(
+    name = "gicp_align",
+    srcs = [ 
+        "src/align.cpp",
+    ],
+    deps = [
+        ":fast_gicp",
+        "@third_party//:pcl__pcl_common",
+        "@third_party//:pcl__pcl_features",
+        "@third_party//:pcl__pcl_filters",
+        "@third_party//:pcl__pcl_io",
+        "@third_party//:pcl__pcl_kdtree",
+        "@third_party//:pcl__pcl_octree",
+        "@third_party//:pcl__pcl_registration",
+        "@third_party//:pcl__pcl_sample_consensus",
+        "@third_party//:pcl__pcl_search",
+    ],
+)
