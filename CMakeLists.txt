@@ -52,8 +52,8 @@ target_include_directories(fast_gicp PUBLIC
 
 ### CUDA ###
 if(BUILD_VGICP_CUDA)
-    set(CUDA_NVCC_FLAGS "--expt-relaxed-constexpr")
-    add_definitions(-DUSE_VGICP_CUDA)
+	#    set(CUDA_NVCC_FLAGS "--expt-relaxed-constexpr")
+	#    add_definitions(-DUSE_VGICP_CUDA)
     glyd_add_library(fast_vgicp_cuda SHARED
         SOURCES
             src/fast_gicp/cuda/fast_vgicp_cuda.cu
@@ -95,6 +95,9 @@ if(BUILD_VGICP_CUDA)
         thirdparty/nvbio
         # ${OpenMP_CXX_FLAGS}
     )
+    target_compile_options(fast_vgicp_cuda PRIVATE --expt-relaxed-constexpr -Xcudafe --diag_suppress=esa_on_defaulted_function_ignored -Wno-narrowing)
+    target_compile_definitions(fast_vgicp_cuda PRIVATE USE_VGICP_CUDA)
+
 endif()
 
 ### APPS ###
