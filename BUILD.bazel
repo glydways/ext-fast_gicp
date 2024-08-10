@@ -1,4 +1,4 @@
-load("//bazel/rules/cc:defs.bzl", "cc_library", "cc_binary")
+load("//bzl/rules/cc:defs.bzl", "cc_library", "cc_binary")
 load("@ark//bazel/rules/cuda:defs.bzl", "cuda_library", "cuda_binary", "cuda_test")
 
 cc_library(
