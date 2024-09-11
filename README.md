@@ -1,3 +1,8 @@
+
+# Note: New faster library is released
+
+We released [small_gicp](https://github.com/koide3/small_gicp) that is twice as fast as fast_gicp and with minimum dependencies and clean interfaces.
+
 # fast_gicp
 
 This package is a collection of GICP-based fast point cloud registration algorithms. It constains a multi-threaded GICP as well as multi-thread and GPU implementations of our voxelized GICP (VGICP) algorithm. All the implemented algorithms have the PCL registration interface so that they can be used as an inplace replacement for GICP in PCL.
@@ -148,6 +153,10 @@ rosrun fast_gicp gicp_kitti /your/kitti/path/sequences/00/velodyne
 cd fast_gicp/src
 python3 kitti.py /your/kitti/path/sequences/00/velodyne
 ```
+
+## Note
+
+In some environments, setting a fewer number of threads rather than the (default) maximum number of threads may result in faster processing (see https://github.com/SMRT-AIST/fast_gicp/issues/145#issuecomment-1890885373).
 
 ## Related packages
 - [ndt_omp](https://github.com/koide3/ndt_omp)
