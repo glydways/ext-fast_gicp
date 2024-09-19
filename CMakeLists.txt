@@ -17,7 +17,17 @@ find_package(PCL REQUIRED)
 find_package(Eigen3 REQUIRED)
 add_definitions(${PCL_DEFINITIONS})
 
+include(FetchContent)
 
+FetchContent_Declare(
+    Thrust
+    GIT_REPOSITORY https://github.com/NVIDIA/thrust.git
+    GIT_TAG 1.17.2
+)
+
+FetchContent_MakeAvailable(Thrust)
+
+thrust_create_target(Thrust)
 
 ###########
 ## Build ##
@@ -78,6 +88,7 @@ if(BUILD_VGICP_CUDA)
             pcl::pcl_sample_consensus
             pcl::pcl_search
             Eigen3::Eigen
+            Thrust
             CUDA::cublas
             CUDA::curand
     )
